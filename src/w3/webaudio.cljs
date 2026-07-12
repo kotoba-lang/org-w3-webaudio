@@ -27,7 +27,27 @@
 (defn new-audio-context!
   "-> AudioContext. opts, if given, is an AudioContextOptions JS object."
   ([] (new-audio-context! nil))
-  ([opts] (if opts (new (ctor) opts) (new (ctor)))))
+  ([opts]
+   ;; `(new (ctor) ...)` mis-compiles when the class expression is itself a
+   ;; fn call: cljs emits `(new w3.webaudio.ctor.call(null))(opts)` (a `new`
+   ;; over the bare `.call` reference, then invoking the *result* with
+   ;; `(opts)`), throwing "... .call is not a constructor" at runtime. Bind
+   ;; the constructor to a local first so `new` gets a plain symbol.
+   (let [Ctor (ctor)]
+     (if opts (new Ctor opts) (new Ctor)))))
+
+(defn new-offline-audio-context!
+  "-> OfflineAudioContext(numberOfChannels, length, sampleRate). Used for
+   deterministic, non-realtime (software) rendering — the only way to
+   exercise AudioWorklet output in headless/CI environments without a real
+   audio output device."
+  [num-channels length sample-rate]
+  (new js/OfflineAudioContext num-channels length sample-rate))
+
+(defn start-rendering!
+  "OfflineAudioContext.startRendering() -> Promise<AudioBuffer>."
+  [^js ctx]
+  (.startRendering ctx))
 
 (defn sample-rate [^js ctx] (.-sampleRate ctx))
 (defn current-time [^js ctx] (.-currentTime ctx))
