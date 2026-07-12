@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: clojure test (portable protocol module)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Clojure CLI
+        uses: DeLaGuardo/setup-clojure@13.1
+        with:
+          cli: latest
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache m2 / gitlibs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: ${{ runner.os }}-clj-org-w3-webaudio
+          restore-keys: |
+            ${{ runner.os }}-clj-
+
+      - name: Test
+        run: clojure -M:test
+
+  compile-check:
+    name: cljs compile check (browser-only binding layer)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Clojure CLI
+        uses: DeLaGuardo/setup-clojure@13.1
+        with:
+          cli: latest
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache m2 / gitlibs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: ${{ runner.os }}-clj-cljs-compile-check-org-w3-webaudio
+          restore-keys: |
+            ${{ runner.os }}-clj-
+
+      # w3.webaudio (AudioContext/AudioWorkletNode binding) has no runtime
+      # test suite -- those globals don't exist under Node. The cljs
+      # compile itself catches syntax/require/macro-expansion errors, same
+      # as org-w3-webcodecs's CI.
+      - name: Compile-check
+        run: |
+          clojure -Sdeps '{:deps {org.clojure/clojurescript {:mvn/version "1.11.132"}} :paths ["src"]}' \
+            -M -m cljs.main --compile w3.webaudio
+
+  e2e-bundle-compile-check:
+    name: real-browser AudioWorklet E2E bundle compile check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Setup Clojure CLI
+        uses: DeLaGuardo/setup-clojure@13.1
+        with:
+          cli: latest
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Cache m2 / gitlibs
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2
+            ~/.gitlibs
+          key: ${{ runner.os }}-clj-e2e-bundle-org-w3-webaudio
+          restore-keys: |
+            ${{ runner.os }}-clj-
+
+      # Compiles both E2E bundles (main-thread driver + worklet DSP, both
+      # requiring kotoba-lang/audio's audio.synth via the :e2e alias'
+      # pinned-SHA git dep) with :optimizations advanced -- the actual fix
+      # for the AudioWorkletProcessor loading blocker documented in the
+      # README (see scripts/build-e2e-bundles.sh for the full writeup).
+      # This does NOT launch a real browser / run Playwright in CI (no
+      # Chromium install step here, matching org-w3-webcodecs's CI, which
+      # also only compile-checks and does not run its browser E2E in CI) --
+      # it only proves the bundles keep compiling as kotoba-lang/audio and
+      # this repo evolve. The actual real-browser proof
+      # (test/e2e/run_e2e.cljs) is run locally/on demand.
+      - name: Build E2E bundles
+        run: bash scripts/build-e2e-bundles.sh
