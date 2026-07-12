@@ -1,0 +1,12 @@
+;; org-w3-webaudio — raw W3C Web Audio API thin wrapper (browser-only for the
+;; AudioContext/AudioWorkletNode binding layer) + a portable, testable
+;; message-protocol namespace for the worklet MessagePort boundary. DSP
+;; (synthesis/effects/mixer bus) lives in kotoba-lang/audio, which is meant
+;; to consume this the way kami-webgpu consumes org-w3-webgpu.
+{:paths ["src"]
+ :deps  {}
+ :aliases
+ {:test {:extra-paths ["test"]
+         :extra-deps  {io.github.cognitect-labs/test-runner
+                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
+         :main-opts   ["-m" "cognitect.test-runner"]}}}
