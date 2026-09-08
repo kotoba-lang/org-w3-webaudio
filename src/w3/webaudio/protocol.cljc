@@ -12,7 +12,7 @@
    `encode-message`/`decode-message`. Keys are converted kebab-case <->
    camelCase at the boundary, matching the JS-side convention an
    AudioWorkletProcessor would expect from `event.data`."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (def valid-types
   #{:note-on :note-off :set-param :pcm-block :ack :error})
@@ -24,7 +24,7 @@
 (defn- camel->kebab [s]
   (-> s
       (str/replace #"([a-z0-9])([A-Z])" "$1-$2")
-      str/lower-case))
+      str/lower))
 
 (defn- keys->camel [m]
   (into {} (map (fn [[k v]] [(kebab->camel k) v])) m))
