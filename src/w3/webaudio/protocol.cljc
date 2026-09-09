@@ -11,7 +11,26 @@
    payloads are structured-clone data, not EDN) and a string \"type\" -- see
    `encode-message`/`decode-message`. Keys are converted kebab-case <->
    camelCase at the boundary, matching the JS-side convention an
-   AudioWorkletProcessor would expect from `event.data`."
+   AudioWorkletProcessor would expect from `event.data`.
+
+   ## Kotoba migration: :blocked, measured 2026-09-09
+
+   This namespace stays `.cljc`. Its job is a key-by-key rename across an OPEN
+   map -- `keys->camel` / `keys->kebab` walk whatever keys a control message
+   carries -- and a Kotoba guest cannot enumerate a document map's keys:
+   `document-keys`, `document-key-at`, `document-map-keys`, `document-entry-at`,
+   `document-map-at` and `document-kv-at` are all refused by `-M check`, while
+   `document-count` (the control) is admitted.
+
+   The decisions here would each move fine: the six valid types are a closed set
+   and one key's spelling on each side is a scan. Moving only those and leaving
+   the traversal behind is a decision-only slice, which
+   `kotoba-lang/lang/q9-migration.edn` forbids
+   (`:decision-only-slices-allowed false`, `:migration-unit :whole-component`).
+
+   `test/w3/webaudio/kotoba_blocked_probe.cljs` asserts those six refusals and
+   goes RED when any key-enumeration primitive is admitted, so the block lifts
+   itself rather than waiting to be remembered."
   (:require [kotoba.lang.text :as str]))
 
 (def valid-types
