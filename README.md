@@ -40,7 +40,7 @@ only exist in a real browser, so `w3/webaudio.cljs` (like org-w3-webgpu's
 unit tested (portable, no browser needed):
 
 ```
-clojure -M:test
+kbb -M:test
 Ran 4 tests containing 17 assertions.
 0 failures, 0 errors.
 ```
@@ -213,11 +213,11 @@ processor (not the hand-written-JS escape hatch the gate also allows for).
 ## Develop
 
 ```
-clojure -M:test   ;; protocol.cljc only — webaudio.cljs needs a real browser
+kbb -M:test   ;; protocol.cljc only — webaudio.cljs needs a real browser
 
 # Real-browser AudioWorklet DSP E2E (requires the Clojure CLI, Node, and a
 # checkout of kotoba-lang/audio for the offline reference computation):
 bash scripts/build-e2e-bundles.sh
 npm --prefix test/e2e install
-nbb -cp "/path/to/kotoba-lang/audio/src" test/e2e/run_e2e.cljk
+kbb --backend sci -cp "/path/to/kotoba-lang/audio/src" test/e2e/run_e2e.cljk
 ```

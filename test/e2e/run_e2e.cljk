@@ -15,7 +15,7 @@
    `npm install` inside test/e2e/ for the Playwright dependency.
 
    Run from the repo root:
-     nbb -cp \"$AUDIO_SRC_PATH\" test/e2e/run_e2e.cljk"
+     kbb --backend sci -cp \"$AUDIO_SRC_PATH\" test/e2e/run_e2e.cljk"
   (:require ["playwright" :refer [chromium]]
             ["http" :as http]
             ["fs" :as fs]
