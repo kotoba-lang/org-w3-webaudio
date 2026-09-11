@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # Compiles the two bundles needed for the org-w3-webaudio real-browser
-# AudioWorkletProcessor E2E (test/e2e/run_e2e.cljs):
+# AudioWorkletProcessor E2E (test/e2e/run_e2e.cljk):
 #
-#   1. test/e2e/src/w3/webaudio/e2e/main_driver.cljs -> main-thread bundle
-#      (page/main-driver-bundle.js). Uses this repo's own src/w3/webaudio.cljs
+#   1. test/e2e/src/w3/webaudio/e2e/main_driver.cljk -> main-thread bundle
+#      (page/main-driver-bundle.js). Uses this repo's own src/w3/webaudio.cljk
 #      binding layer to drive AudioContext/OfflineAudioContext/AudioWorkletNode
 #      from the page.
-#   2. test/e2e/src/w3/webaudio/e2e/worklet_dsp.cljs -> worklet-side bundle
+#   2. test/e2e/src/w3/webaudio/e2e/worklet_dsp.cljk -> worklet-side bundle
 #      (page/worklet-processor.js). Requires kotoba-lang/audio's audio.synth
 #      -- the .cljc DSP source of truth -- directly, and exports a
 #      render-note entrypoint consumed by the hand-written

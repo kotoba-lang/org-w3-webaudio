@@ -17,13 +17,13 @@ opinions — those stay in `audio`.
 
 **Scope is deliberately narrow, mirroring org-w3-webgpu exactly:**
 
-- `src/w3/webaudio.cljs` — `AudioContext` lifecycle (create/resume/suspend/
+- `src/w3/webaudio.cljk` — `AudioContext` lifecycle (create/resume/suspend/
   close), `AudioWorkletNode` creation + `audioWorklet.addModule`, node
   `connect!`/`disconnect!`, `GainNode`/`AudioBuffer`/`AudioBufferSourceNode`
   creation, and the `AudioWorkletNode.port` (MessagePort) primitives
   (`post-message!`/`on-message!`). Descriptors/options are plain JS objects
   built by the caller, same non-translation stance as org-w3-webgpu.
-- `src/w3/webaudio/protocol.cljc` — **portable** (JVM + cljs) encode/decode
+- `src/w3/webaudio/protocol.cljk` — **portable** (JVM + cljs) encode/decode
   for the small control-message envelope sent across the worklet
   `MessagePort` (note-on/note-off/param-change/pcm-block/ack/error). PCM
   sample data itself is a `Float32Array` and crosses the port directly
@@ -169,21 +169,21 @@ repeated in full here:
    always-keep.
 
 **Real E2E** (`test/e2e/`, `scripts/build-e2e-bundles.sh` +
-`test/e2e/run_e2e.cljs`): a worklet-side bundle
+`test/e2e/run_e2e.cljk`): a worklet-side bundle
 (`w3.webaudio.e2e.worklet-dsp`) requires `kotoba-lang/audio`'s own
 `audio.synth` directly (not a reimplementation) and exports a
 `render-note` entrypoint; a hand-written `AudioWorkletProcessor` subclass
 (real ES6 `class ... extends`, native `super()`) calls it once in its
 constructor and streams the precomputed buffer out through the realtime
 `process()` quantum callback. A main-thread bundle
-(`w3.webaudio.e2e.main-driver`) uses this repo's own `src/w3/webaudio.cljs`
+(`w3.webaudio.e2e.main-driver`) uses this repo's own `src/w3/webaudio.cljk`
 binding layer (`new-offline-audio-context!`, `add-worklet-module!`,
 `create-worklet-node!`, `connect!`, `start-rendering!`) to load the worklet
 module into a real headless Chromium (Playwright,
 `kotoba-lang/playwright`'s bridge pattern), render a 440 Hz sine through a
 short ADSR envelope (0.2 s @ 48 kHz, attack 0.01 s / decay 0.02 s / sustain
 0.6 / release 0.05 s starting at 0.15 s), and capture the actual rendered
-PCM via `OfflineAudioContext`. `test/e2e/run_e2e.cljs` independently
+PCM via `OfflineAudioContext`. `test/e2e/run_e2e.cljk` independently
 computes the same note via `audio.synth` directly (no browser involved) as
 the ground-truth reference, and diffs the two:
 
@@ -219,5 +219,5 @@ clojure -M:test   ;; protocol.cljc only — webaudio.cljs needs a real browser
 # checkout of kotoba-lang/audio for the offline reference computation):
 bash scripts/build-e2e-bundles.sh
 npm --prefix test/e2e install
-nbb -cp "/path/to/kotoba-lang/audio/src" test/e2e/run_e2e.cljs
+nbb -cp "/path/to/kotoba-lang/audio/src" test/e2e/run_e2e.cljk
 ```

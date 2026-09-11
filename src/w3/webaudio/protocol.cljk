@@ -28,7 +28,7 @@
    `kotoba-lang/lang/q9-migration.edn` forbids
    (`:decision-only-slices-allowed false`, `:migration-unit :whole-component`).
 
-   `test/w3/webaudio/kotoba_blocked_probe.cljs` asserts those six refusals and
+   `test/w3/webaudio/kotoba_blocked_probe.cljk` asserts those six refusals and
    goes RED when any key-enumeration primitive is admitted, so the block lifts
    itself rather than waiting to be remembered."
   (:require [kotoba.lang.text :as str]))

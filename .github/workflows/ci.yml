@@ -115,6 +115,6 @@ jobs:
       # also only compile-checks and does not run its browser E2E in CI) --
       # it only proves the bundles keep compiling as kotoba-lang/audio and
       # this repo evolve. The actual real-browser proof
-      # (test/e2e/run_e2e.cljs) is run locally/on demand.
+      # (test/e2e/run_e2e.cljk) is run locally/on demand.
       - name: Build E2E bundles
         run: bash scripts/build-e2e-bundles.sh

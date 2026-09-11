@@ -1,11 +1,11 @@
 (ns w3.webaudio.e2e.main-driver
   "E2E-only, main-thread bundle for org-w3-webaudio's real-browser
-   AudioWorkletProcessor proof. Uses this repo's own src/w3/webaudio.cljs
+   AudioWorkletProcessor proof. Uses this repo's own src/w3/webaudio.cljk
    binding layer (not raw AudioContext calls) to set up an
    OfflineAudioContext, load the worklet-side DSP bundle
    (test/e2e/page/worklet-processor.js) via audioWorklet.addModule, create
    the AudioWorkletNode, render, and hand back the rendered PCM as a plain
-   array for comparison (by test/e2e/run_e2e.cljs) against audio.synth's own
+   array for comparison (by test/e2e/run_e2e.cljk) against audio.synth's own
    offline render of the same note parameters.
 
    Compiled the same way as worklet_dsp.cljs (:optimizations advanced) for
