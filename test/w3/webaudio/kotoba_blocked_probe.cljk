@@ -31,7 +31,7 @@
 ;; When any key-enumeration primitive is admitted, this probe goes RED and the
 ;; migration is unblocked. Nobody has to remember.
 ;;
-;;   nbb test/w3/webaudio/kotoba_blocked_probe.cljs
+;;   nbb test/w3/webaudio/kotoba_blocked_probe.cljk
 
 (ns kotoba-blocked-probe
   (:require ["node:child_process" :as cp]
